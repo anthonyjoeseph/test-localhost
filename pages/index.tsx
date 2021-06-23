@@ -1,8 +1,25 @@
 import Head from 'next/head'
 import Image from 'next/image'
+import { useEffect, useState } from 'react'
 import styles from '../styles/Home.module.css'
 
 export default function Home() {
+  //const [token, setToken] = useState<string>()
+  useEffect(() => {
+    fetch("http://localhost:3002/api/v2/auth/login", {
+      body: JSON.stringify({
+        email: "test@flipsidecrypto.com",
+        password: "password"
+      }),
+      method: "POST"
+    }).then(resp => resp.json())
+    .then(json => json.data.token)
+    .then((token) => fetch("http://localhost:3002/api/v2/boards", {
+      headers: {
+        Authorization: token ?? '',
+      }
+    }))
+  }, [])
   return (
     <div className={styles.container}>
       <Head>
